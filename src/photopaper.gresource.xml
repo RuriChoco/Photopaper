@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/github/RuriChoco/Photopaper">
+    <file preprocess="xml-stripblanks">window.ui</file>
+    <file preprocess="xml-stripblanks">shortcuts-dialog.ui</file>
+    <file preprocess="xml-stripblanks">preferences.ui</file>
+  </gresource>
+  <gresource prefix="/com/github/RuriChoco/Photopaper/icons">
+    <file alias="scalable/actions/document-page-setup-symbolic.svg">../data/icons/scalable/actions/document-page-setup-symbolic.svg</file>
+    <file alias="scalable/status/user-invisible-symbolic.svg">../data/icons/scalable/status/user-invisible-symbolic.svg</file>
+    <file alias="scalable/status/weather-clear-night-symbolic.svg">../data/icons/scalable/status/weather-clear-night-symbolic.svg</file>
+    <file alias="scalable/status/photopaper-system-symbolic.svg">../data/icons/scalable/status/photopaper-system-symbolic.svg</file>
+  </gresource>
+</gresources>

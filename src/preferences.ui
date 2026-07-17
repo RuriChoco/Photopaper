@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="PhotopaperPreferencesWindow" parent="AdwPreferencesWindow">
+    <property name="search-enabled">False</property>
+    <property name="default-width">500</property>
+    <property name="default-height">400</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">General</property>
+        <property name="icon-name">settings-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Appearance</property>
+            <child>
+              <object class="AdwComboRow" id="theme_combo_row">
+                <property name="title" translatable="yes">Theme</property>
+                <property name="subtitle" translatable="yes">Application appearance</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">System</item>
+                      <item translatable="yes">Light</item>
+                      <item translatable="yes">Dark</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Defaults</property>
+            <child>
+              <object class="AdwComboRow" id="pref_export_format">
+                <property name="title" translatable="yes">Export Format</property>
+                <property name="subtitle" translatable="yes">Default file format for saving layouts</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">High-Quality PNG</item>
+                      <item translatable="yes">Standard JPEG</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="pref_keep_metadata">
+                <property name="title" translatable="yes">Keep Original Metadata</property>
+                <property name="subtitle" translatable="yes">Preserve EXIF data when exporting</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="pref_acceleration">
+                <property name="title" translatable="yes">Multi-Core Acceleration</property>
+                <property name="subtitle" translatable="yes">Use all CPU cores for faster processing</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Processing</property>
+            <child>
+              <object class="AdwSwitchRow" id="pref_ai_bg_removal">
+                <property name="title" translatable="yes">Use AI Background Removal</property>
+                <property name="subtitle" translatable="yes">Uses an AI model instead of legacy flood-fill (disables Tolerance setting)</property>
+                <property name="active">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Photopaper
+Exec=photopaper
+Icon=com.github.RuriChoco.Photopaper
+Terminal=false
+Type=Application
+Categories=Utility;
+Keywords=GTK;
+StartupNotify=true
+DBusActivatable=true

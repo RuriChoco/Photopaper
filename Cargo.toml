@@ -1,0 +1,21 @@
+[package]
+name = "photopaper"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gettext-rs = { version = "0.7", features = ["gettext-system"] }
+gtk = { version = "0.9", package = "gtk4", features = ["gnome_47"] }
+image = "0.25"
+rayon = "1.10"
+img-parts = "0.3"
+bytes = "1.5"
+kamadak-exif = "0.5"
+rembg-rs = "0.1.4"
+ureq = "2.9"
+ort = { version = "2.0.0-rc.10", features = ["download-binaries", "copy-dylibs"] }
+
+[dependencies.adw]
+package = "libadwaita"
+version = "0.7"
+features = ["v1_6"]

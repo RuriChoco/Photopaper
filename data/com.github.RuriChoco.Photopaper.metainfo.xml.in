@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.RuriChoco.Photopaper</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <name>Photopaper</name>
+  <summary>Format and process passport or ID photos</summary>
+  <description>
+    <p>Photopaper is a simple utility for processing profile pictures and turning them into perfectly sized passport or ID photos. It features an intuitive interface to crop, brightness-adjust, and align your photo according to standard requirements.</p>
+    <p>It also features a powerful AI-driven background removal tool that can automatically cut out the subject from a busy background and place them on a clean white backdrop, saving you from complex manual masking.</p>
+  </description>
+
+  <developer id="io.github.rurichoco">
+    <name>RuriChoco</name>
+  </developer>
+
+  <!-- Replace with your actual repository URL -->
+  <url type="homepage">https://github.com/RuriChoco/Photopaper</url>
+  <url type="bugtracker">https://github.com/RuriChoco/Photopaper/issues</url>
+  <url type="vcs-browser">https://github.com/RuriChoco/Photopaper</url>
+
+  <translation type="gettext">photopaper</translation>
+  <launchable type="desktop-id">com.github.RuriChoco.Photopaper.desktop</launchable>
+  <content_rating type="oars-1.1" />
+
+  <branding>
+    <color type="primary" scheme_preference="light">#3584e4</color>
+    <color type="primary" scheme_preference="dark">#1c71d8</color>
+  </branding>
+
+  <screenshots>
+    <screenshot type="default">
+      <!-- Replace with an actual screenshot URL after you host it (e.g. in your repo) -->
+      <image>https://raw.githubusercontent.com/RuriChoco/Photopaper/main/screenshots/main-window.png</image>
+      <caption>The main window of Photopaper</caption>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="1.0.0" date="2026-07-17">
+      <description translate="no">
+        <p>Initial release of Photopaper.</p>
+        <ul>
+          <li>Format images to standard passport/ID sizes</li>
+          <li>AI-powered background removal</li>
+          <li>Brightness and tolerance adjustments</li>
+          <li>Rule-of-thirds cropping alignment overlay</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+
+</component>

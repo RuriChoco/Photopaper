@@ -1,0 +1,6 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+data/com.github.RuriChoco.Photopaper.desktop.in
+data/com.github.RuriChoco.Photopaper.metainfo.xml.in
+data/com.github.RuriChoco.Photopaper.gschema.xml
+src/window.ui

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="photopaper">
+	<schema id="com.github.RuriChoco.Photopaper" path="/com/github/RuriChoco/Photopaper/">
+	</schema>
+</schemalist>
