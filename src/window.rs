@@ -235,6 +235,39 @@ impl PhotopaperWindow {
             }
         ));
 
+        let scroll_zoom = gtk::EventControllerScroll::new(gtk::EventControllerScrollFlags::VERTICAL);
+        imp.preview_picture.add_controller(scroll_zoom.clone());
+
+        scroll_zoom.connect_scroll(glib::clone!(
+            #[weak(rename_to = window)]
+            self,
+            #[upgrade_or]
+            glib::Propagation::Proceed,
+            move |controller, _dx, dy| {
+                if controller.current_event_state().contains(gdk::ModifierType::CONTROL_MASK) {
+                    let imp = window.imp();
+                    let current_zoom = *imp.zoom_level.borrow();
+                    
+                    if current_zoom == 1.0 {
+                        *imp.base_width.borrow_mut() = imp.preview_picture.width();
+                        *imp.base_height.borrow_mut() = imp.preview_picture.height();
+                    }
+
+                    // dy > 0 means scrolling down (zoom out), dy < 0 means scrolling up (zoom in)
+                    let target_zoom = if dy > 0.0 {
+                        current_zoom / 1.15
+                    } else {
+                        current_zoom * 1.15
+                    };
+
+                    window.apply_zoom(target_zoom, None, None);
+                    glib::Propagation::Stop
+                } else {
+                    glib::Propagation::Proceed
+                }
+            }
+        ));
+
         imp.paper_size_row.connect_selected_notify(glib::clone!(
             #[weak(rename_to = window)]
             self,

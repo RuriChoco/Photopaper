@@ -410,8 +410,10 @@ impl Processor {
                     PaperSize::FourR => {
                         // 4R safe layout (1 col of 2x2s on left, 1x1s filling rest)
                         // This strictly respects the 0.2 inch margin + 0.1 inch gaps.
-                        let start_x = (canvas_w - usable_w) / 2; 
-                        let start_y = (canvas_h - usable_h) / 2;
+                        let block_w = size_2x2.0 + size_1x1.0 + spacing;
+                        let block_h = 2 * (size_2x2.1 + spacing) + size_1x1.1; // 2 rows of 2x2, 1 row of 1x1 at the bottom
+                        let start_x = (canvas_w.saturating_sub(block_w)) / 2; 
+                        let start_y = (canvas_h.saturating_sub(block_h)) / 2;
                         
                         // Left block: Two 2x2s (1 col, 2 rows)
                         for row in 0..2 {
