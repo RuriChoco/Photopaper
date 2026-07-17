@@ -280,48 +280,75 @@ impl Processor {
         let size_2x2 = (600, 600);
         let size_passport = (413, 531); 
 
+        let margin = 60; // 0.2 inch safe margin from edges
+        let spacing = 30; // 0.1 inch gap between photos for easy cutting
+
         match layout {
             LayoutMode::Single(IdSize::TwoByTwo) => {
                 let resized = Self::resize_photo(&mut cropped_photo, &IdSize::TwoByTwo, size_2x2);
-                let cols = canvas_w / size_2x2.0;
-                let rows = canvas_h / size_2x2.1;
-                let start_x = (canvas_w - (cols * size_2x2.0)) / 2;
-                let start_y = (canvas_h - (rows * size_2x2.1)) / 2;
+                let usable_w = canvas_w.saturating_sub(2 * margin);
+                let usable_h = canvas_h.saturating_sub(2 * margin);
+                
+                let cols = (usable_w + spacing) / (size_2x2.0 + spacing);
+                let rows = (usable_h + spacing) / (size_2x2.1 + spacing);
+                let cols = std::cmp::max(1, cols);
+                let rows = std::cmp::max(1, rows);
+
+                let block_w = cols * size_2x2.0 + (cols - 1) * spacing;
+                let block_h = rows * size_2x2.1 + (rows - 1) * spacing;
+                let start_x = (canvas_w.saturating_sub(block_w)) / 2;
+                let start_y = (canvas_h.saturating_sub(block_h)) / 2;
                 
                 for row in 0..rows {
                     for col in 0..cols {
-                        let x = start_x + col * size_2x2.0;
-                        let y = start_y + row * size_2x2.1;
+                        let x = start_x + col * (size_2x2.0 + spacing);
+                        let y = start_y + row * (size_2x2.1 + spacing);
                         imageops::overlay(&mut canvas, &resized, x as i64, y as i64);
                     }
                 }
             }
             LayoutMode::Single(IdSize::OneByOne) => {
                 let resized = Self::resize_photo(&mut cropped_photo, &IdSize::OneByOne, size_1x1);
-                let cols = canvas_w / size_1x1.0;
-                let rows = canvas_h / size_1x1.1;
-                let start_x = (canvas_w - (cols * size_1x1.0)) / 2;
-                let start_y = (canvas_h - (rows * size_1x1.1)) / 2;
+                let usable_w = canvas_w.saturating_sub(2 * margin);
+                let usable_h = canvas_h.saturating_sub(2 * margin);
+                
+                let cols = (usable_w + spacing) / (size_1x1.0 + spacing);
+                let rows = (usable_h + spacing) / (size_1x1.1 + spacing);
+                let cols = std::cmp::max(1, cols);
+                let rows = std::cmp::max(1, rows);
+
+                let block_w = cols * size_1x1.0 + (cols - 1) * spacing;
+                let block_h = rows * size_1x1.1 + (rows - 1) * spacing;
+                let start_x = (canvas_w.saturating_sub(block_w)) / 2;
+                let start_y = (canvas_h.saturating_sub(block_h)) / 2;
 
                 for row in 0..rows {
                     for col in 0..cols {
-                        let x = start_x + col * size_1x1.0;
-                        let y = start_y + row * size_1x1.1;
+                        let x = start_x + col * (size_1x1.0 + spacing);
+                        let y = start_y + row * (size_1x1.1 + spacing);
                         imageops::overlay(&mut canvas, &resized, x as i64, y as i64);
                     }
                 }
             }
             LayoutMode::Single(IdSize::Passport) => {
                 let resized = Self::resize_photo(&mut cropped_photo, &IdSize::Passport, size_passport);
-                let cols = canvas_w / size_passport.0;
-                let rows = canvas_h / size_passport.1;
-                let start_x = (canvas_w - (cols * size_passport.0)) / 2;
-                let start_y = (canvas_h - (rows * size_passport.1)) / 2;
+                let usable_w = canvas_w.saturating_sub(2 * margin);
+                let usable_h = canvas_h.saturating_sub(2 * margin);
+                
+                let cols = (usable_w + spacing) / (size_passport.0 + spacing);
+                let rows = (usable_h + spacing) / (size_passport.1 + spacing);
+                let cols = std::cmp::max(1, cols);
+                let rows = std::cmp::max(1, rows);
+
+                let block_w = cols * size_passport.0 + (cols - 1) * spacing;
+                let block_h = rows * size_passport.1 + (rows - 1) * spacing;
+                let start_x = (canvas_w.saturating_sub(block_w)) / 2;
+                let start_y = (canvas_h.saturating_sub(block_h)) / 2;
 
                 for row in 0..rows {
                     for col in 0..cols {
-                        let x = start_x + col * size_passport.0;
-                        let y = start_y + row * size_passport.1;
+                        let x = start_x + col * (size_passport.0 + spacing);
+                        let y = start_y + row * (size_passport.1 + spacing);
                         imageops::overlay(&mut canvas, &resized, x as i64, y as i64);
                     }
                 }
@@ -332,57 +359,73 @@ impl Processor {
                 let resized_2x2 = Self::resize_photo(&mut p1, &IdSize::TwoByTwo, size_2x2);
                 let resized_1x1 = Self::resize_photo(&mut p2, &IdSize::OneByOne, size_1x1);
                 
+                let usable_w = canvas_w.saturating_sub(2 * margin);
+                let usable_h = canvas_h.saturating_sub(2 * margin);
+
                 match paper {
                     PaperSize::A4 | PaperSize::FiveR => {
-                        let (cols_2x2, rows_2x2, cols_1x1, rows_1x1) = match paper {
-                            PaperSize::A4 => (4, 3, 8, 5),
-                            _ => (2, 2, 4, 2), // FiveR safely fits 4pcs 2x2 and 8pcs 1x1
-                        };
-                        let block_w = cols_2x2 * size_2x2.0;
-                        let block_h = (rows_2x2 * size_2x2.1) + (rows_1x1 * size_1x1.1);
+                        // Dynamically pack mixed sizes based on usable space
+                        let rows_2x2 = (usable_h / 2 + spacing) / (size_2x2.1 + spacing);
+                        let cols_2x2 = (usable_w + spacing) / (size_2x2.0 + spacing);
+                        let cols_2x2 = std::cmp::max(1, cols_2x2);
+                        let rows_2x2 = std::cmp::max(1, rows_2x2);
+
+                        let remaining_h = usable_h.saturating_sub(rows_2x2 * size_2x2.1 + rows_2x2 * spacing);
+                        
+                        let cols_1x1 = (usable_w + spacing) / (size_1x1.0 + spacing);
+                        let rows_1x1 = (remaining_h + spacing) / (size_1x1.1 + spacing);
+
+                        let block_w = std::cmp::max(
+                            cols_2x2 * size_2x2.0 + (cols_2x2.saturating_sub(1)) * spacing,
+                            cols_1x1 * size_1x1.0 + (cols_1x1.saturating_sub(1)) * spacing
+                        );
+                        let block_h = rows_2x2 * size_2x2.1 + (rows_2x2.saturating_sub(1)) * spacing 
+                                    + spacing // Gap between 2x2 and 1x1 blocks
+                                    + rows_1x1 * size_1x1.1 + (rows_1x1.saturating_sub(1)) * spacing;
+
                         let start_x = (canvas_w.saturating_sub(block_w)) / 2;
                         let start_y = (canvas_h.saturating_sub(block_h)) / 2;
 
                         for row in 0..rows_2x2 {
                             for col in 0..cols_2x2 {
-                                let x = start_x + col * size_2x2.0;
-                                let y = start_y + row * size_2x2.1;
+                                let x = start_x + (block_w - (cols_2x2 * size_2x2.0 + (cols_2x2 - 1) * spacing)) / 2 + col * (size_2x2.0 + spacing);
+                                let y = start_y + row * (size_2x2.1 + spacing);
                                 imageops::overlay(&mut canvas, &resized_2x2, x as i64, y as i64);
                             }
                         }
 
-                        let y_offset_1x1 = start_y + (rows_2x2 * size_2x2.1);
+                        let y_offset_1x1 = start_y + rows_2x2 * (size_2x2.1 + spacing);
                         for row in 0..rows_1x1 {
                             for col in 0..cols_1x1 {
-                                let x = start_x + col * size_1x1.0;
-                                let y = y_offset_1x1 + row * size_1x1.1;
+                                let x = start_x + (block_w - (cols_1x1 * size_1x1.0 + (cols_1x1 - 1) * spacing)) / 2 + col * (size_1x1.0 + spacing);
+                                let y = y_offset_1x1 + row * (size_1x1.1 + spacing);
                                 imageops::overlay(&mut canvas, &resized_1x1, x as i64, y as i64);
                             }
                         }
                     }
                     PaperSize::FourR => {
-                        // 4R safe layout (2pcs 2x2, 7pcs 1x1) with 0.5 inch safe margins!
-                        // This prevents printer cutoff while maintaining 100% physical size accuracy.
-                        let start_x = 150; // 0.5 inch margin
-                        let start_y = 150; // 0.5 inch margin
+                        // 4R safe layout (1 col of 2x2s on left, 1x1s filling rest)
+                        // This strictly respects the 0.2 inch margin + 0.1 inch gaps.
+                        let start_x = (canvas_w - usable_w) / 2; 
+                        let start_y = (canvas_h - usable_h) / 2;
                         
                         // Left block: Two 2x2s (1 col, 2 rows)
                         for row in 0..2 {
-                            let y = start_y + row * size_2x2.1;
+                            let y = start_y + row * (size_2x2.1 + spacing);
                             imageops::overlay(&mut canvas, &resized_2x2, start_x as i64, y as i64);
                         }
                         
-                        // Right block: Four 1x1s (1 col, 4 rows) touching the right edge of 2x2s
-                        let right_x = start_x + size_2x2.0; // 150 + 600 = 750
+                        // Right block: Four 1x1s (1 col, 4 rows)
+                        let right_x = start_x + size_2x2.0 + spacing; 
                         for row in 0..4 {
-                            let y = start_y + row * size_1x1.1;
+                            let y = start_y + row * (size_1x1.1 + spacing);
                             imageops::overlay(&mut canvas, &resized_1x1, right_x as i64, y as i64);
                         }
                         
-                        // Bottom block: Three 1x1s (3 cols, 1 row) touching the bottom edge
-                        let bottom_y = start_y + (2 * size_2x2.1); // 150 + 1200 = 1350
-                        for col in 0..3 {
-                            let x = start_x + col * size_1x1.0;
+                        // Bottom block: 1x1s below the 2x2s
+                        let bottom_y = start_y + 2 * (size_2x2.1 + spacing); 
+                        for col in 0..2 {
+                            let x = start_x + col * (size_1x1.0 + spacing);
                             imageops::overlay(&mut canvas, &resized_1x1, x as i64, bottom_y as i64);
                         }
                     }
