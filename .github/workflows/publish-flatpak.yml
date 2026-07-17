@@ -75,6 +75,7 @@ jobs:
 
       - name: Sign Repository Summary
         run: |
+          mkdir -p flatpak-apps/repo/refs/remotes
           flatpak build-update-repo \
             --gpg-sign=8C7A10814C6E4C38 \
             --generate-static-deltas \
