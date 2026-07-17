@@ -56,12 +56,19 @@ jobs:
           token: ${{ secrets.FLATPAK_REPO_TOKEN }}
           path: flatpak-apps
 
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.FLATPAK_GPG_PRIVKEY }}" > gpg-private.key
+          gpg --batch --import gpg-private.key
+          rm gpg-private.key
+
       - name: Export Flatpak to repo
         run: |
           flatpak-builder \
             --user \
             --disable-rofiles-fuse \
             --export-only \
+            --gpg-sign=8C7A10814C6E4C38 \
             --repo=flatpak-apps/repo \
             build-dir \
             com.github.RuriChoco.Photopaper.json
