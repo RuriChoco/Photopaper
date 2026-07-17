@@ -1,0 +1,76 @@
+name: Build and Publish Flatpak
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for publishing (e.g. v0.1.1 release)'
+        required: false
+        default: 'New release'
+
+jobs:
+  build-and-publish:
+    name: Build Flatpak and Publish to Repo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Photopaper source
+        uses: actions/checkout@v4
+
+      - name: Install Flatpak and flatpak-builder
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y flatpak flatpak-builder elfutils
+
+      - name: Add Flathub remote
+        run: |
+          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+      - name: Install GNOME SDK and Rust extension
+        run: |
+          flatpak install --user -y flathub \
+            org.gnome.Platform//48 \
+            org.gnome.Sdk//48 \
+            org.freedesktop.Sdk.Extension.rust-stable//24.08
+
+      - name: Update manifest commit hash
+        run: |
+          COMMIT=$(git rev-parse HEAD)
+          sed -i "s/\"commit\" : \".*\"/\"commit\" : \"$COMMIT\"/" com.github.RuriChoco.Photopaper.json
+          echo "Building from commit: $COMMIT"
+
+      - name: Build Flatpak
+        run: |
+          flatpak-builder \
+            --user \
+            --disable-rofiles-fuse \
+            --force-clean \
+            --state-dir=.flatpak-builder \
+            build-dir \
+            com.github.RuriChoco.Photopaper.json
+
+      - name: Checkout flatpak-apps repo
+        uses: actions/checkout@v4
+        with:
+          repository: RuriChoco/flatpak-apps
+          token: ${{ secrets.FLATPAK_REPO_TOKEN }}
+          path: flatpak-apps
+
+      - name: Export Flatpak to repo
+        run: |
+          flatpak-builder \
+            --user \
+            --disable-rofiles-fuse \
+            --export-only \
+            --repo=flatpak-apps/repo \
+            build-dir \
+            com.github.RuriChoco.Photopaper.json
+
+      - name: Push to flatpak-apps
+        run: |
+          cd flatpak-apps
+          git config user.name "RuriChoco"
+          git config user.email "113755863+RuriChoco@users.noreply.github.com"
+          git add .
+          git commit -m "Publish Photopaper: ${{ github.event.inputs.reason }} ($(date +'%Y-%m-%d'))"
+          git push
