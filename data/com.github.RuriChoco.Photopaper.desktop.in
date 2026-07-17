@@ -1,10 +1,12 @@
 [Desktop Entry]
 Name=Photopaper
+GenericName=ID Photo Maker
+Comment=Create passport and ID photos with AI background removal
 Exec=photopaper
 Icon=com.github.RuriChoco.Photopaper
 Terminal=false
 Type=Application
-Categories=Utility;
-Keywords=GTK;
+Categories=Graphics;Photography;Utility;
+Keywords=photo;passport;id;portrait;crop;print;background;removal;
 StartupNotify=true
 DBusActivatable=true
