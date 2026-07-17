@@ -2,6 +2,9 @@
   <img src="https://raw.githubusercontent.com/RuriChoco/Photopaper/main/data/icons/hicolor/scalable/apps/com.github.RuriChoco.Photopaper.svg" width="128" height="128" alt="Photopaper Logo">
   <h1>Photopaper</h1>
   <p><strong>A simple, elegant tool to create perfectly sized passport and ID photos with AI background removal.</strong></p>
+  
+  <br/>
+  <img src="https://raw.githubusercontent.com/RuriChoco/Photopaper/main/screenshots/main-window.png" alt="Photopaper Main Window" width="800">
 </div>
 
 ---
