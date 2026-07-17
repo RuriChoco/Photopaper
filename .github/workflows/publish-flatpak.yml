@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout Photopaper source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Install Flatpak and flatpak-builder
         run: |
@@ -50,7 +50,7 @@ jobs:
             com.github.RuriChoco.Photopaper.json
 
       - name: Checkout flatpak-apps repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
           repository: RuriChoco/flatpak-apps
           token: ${{ secrets.FLATPAK_REPO_TOKEN }}
