@@ -171,7 +171,7 @@ impl PhotopaperApplication {
             .application_icon("com.github.RuriChoco.Photopaper")
             .developer_name("RuriChoco")
             .version(VERSION)
-            .translator_credits(&gettext("translator-credits"))
+            .translator_credits(gettext("translator-credits"))
             .copyright("© 2026 RuriChoco")
             .license_type(gtk::License::Custom)
             .license(&formatted_license)

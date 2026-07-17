@@ -76,11 +76,11 @@ impl Processor {
         let mut manager = rembg_rs::manager::ModelManager::from_file(model_path.as_path())
             .map_err(|e| format!("Failed to load AI model: {:?}", e))?;
             
-        let mut options = rembg_rs::options::RemovalOptions::default();
-        // Use a high threshold (e.g. 180) to slightly erode the mask so that
-        // our subsequent blur doesn't sample the original background pixels (avoiding halos).
-        options.threshold = 180;
-        options.binary = false;
+        let options = rembg_rs::options::RemovalOptions {
+            threshold: 180,
+            binary: false,
+            ..Default::default()
+        };
             
         let result = rembg_rs::rembg::rembg(&mut manager, photo.clone(), &options)
             .map_err(|e| format!("AI processing failed: {:?}", e))?;
@@ -175,14 +175,13 @@ impl Processor {
         let original_mask = mask.clone();
         for y in 1..(height - 1) {
             for x in 1..(width - 1) {
-                if original_mask.get_pixel(x, y)[0] == 255 {
-                    if original_mask.get_pixel(x - 1, y)[0] == 0 ||
-                       original_mask.get_pixel(x + 1, y)[0] == 0 ||
-                       original_mask.get_pixel(x, y - 1)[0] == 0 ||
-                       original_mask.get_pixel(x, y + 1)[0] == 0 {
+                if original_mask.get_pixel(x, y)[0] == 255
+                    && (original_mask.get_pixel(x - 1, y)[0] == 0
+                       || original_mask.get_pixel(x + 1, y)[0] == 0
+                       || original_mask.get_pixel(x, y - 1)[0] == 0
+                       || original_mask.get_pixel(x, y + 1)[0] == 0) {
                         mask.put_pixel(x, y, image::Luma([0]));
                     }
-                }
             }
         }
         

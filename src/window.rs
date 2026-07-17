@@ -428,7 +428,7 @@ impl PhotopaperWindow {
                 let imp = window.imp();
                 let photo_opt = imp.raw_loaded_photo.borrow().clone();
                 if let Some(photo) = photo_opt {
-                    let current_crop = imp.crop_rect.borrow().clone();
+                    let current_crop = *imp.crop_rect.borrow();
                     crate::crop_dialog::open_crop_dialog(&window, &photo, current_crop, glib::clone!(
                         #[weak]
                         window,
@@ -622,7 +622,7 @@ impl PhotopaperWindow {
             raw_photo
         };
 
-        let crop_rect = imp.crop_rect.borrow().clone();
+        let crop_rect = *imp.crop_rect.borrow();
         let brightness = imp.brightness_scale.value() as i32;
         let contrast = imp.contrast_scale.value() as f32;
         let sharpen = imp.sharpen_scale.value() as f32;
@@ -749,7 +749,8 @@ impl PhotopaperWindow {
                                         let _ = layout_clone.write_to(&mut buffer, format);
                                         let mut output_bytes = buffer.into_inner();
                                         
-                                        if let Ok(orig_bytes) = std::fs::read(orig_path.unwrap()) {
+                                        if let Some(path) = orig_path {
+                                            if let Ok(orig_bytes) = std::fs::read(path) {
                                             let mut exif_data = None;
                                             if let Ok(jpeg) = img_parts::jpeg::Jpeg::from_bytes(orig_bytes.clone().into()) {
                                                 exif_data = jpeg.exif();
@@ -774,6 +775,7 @@ impl PhotopaperWindow {
                                                         }
                                                     }
                                                 }
+                                            }
                                             }
                                         }
                                         std::fs::write(&path_clone, output_bytes).is_ok()
