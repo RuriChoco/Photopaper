@@ -365,7 +365,11 @@ impl Processor {
                 match paper {
                     PaperSize::A4 | PaperSize::FiveR => {
                         // Dynamically pack mixed sizes based on usable space
-                        let rows_2x2 = (usable_h / 2 + spacing) / (size_2x2.1 + spacing);
+                        let max_2x2_rows = match paper {
+                            PaperSize::A4 => 3,
+                            _ => 2, // FiveR safely gets 2 rows
+                        };
+                        let rows_2x2 = std::cmp::min(max_2x2_rows, (usable_h + spacing) / (size_2x2.1 + spacing));
                         let cols_2x2 = (usable_w + spacing) / (size_2x2.0 + spacing);
                         let cols_2x2 = std::cmp::max(1, cols_2x2);
                         let rows_2x2 = std::cmp::max(1, rows_2x2);
