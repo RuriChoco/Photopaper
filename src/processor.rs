@@ -422,9 +422,9 @@ impl Processor {
                             imageops::overlay(&mut canvas, &resized_1x1, right_x as i64, y as i64);
                         }
                         
-                        // Bottom block: 1x1s below the 2x2s
+                        // Bottom block: 1x1s below the 2x2s (3 photos across to fill the width)
                         let bottom_y = start_y + 2 * (size_2x2.1 + spacing); 
-                        for col in 0..2 {
+                        for col in 0..3 {
                             let x = start_x + col * (size_1x1.0 + spacing);
                             imageops::overlay(&mut canvas, &resized_1x1, x as i64, bottom_y as i64);
                         }
