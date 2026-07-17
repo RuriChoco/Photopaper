@@ -48,20 +48,26 @@
         },
         {
             "name" : "photopaper",
-            "builddir" : true,
-            "buildsystem" : "meson",
+            "buildsystem" : "simple",
             "build-options" : {
                 "append-path" : "/usr/lib/sdk/rust-stable/bin",
                 "env" : {
                     "CARGO_HOME" : "/run/build/photopaper/cargo-home",
-                    "CARGO_NET_OFFLINE" : "true"
+                    "ORT_LIB_LOCATION" : "/app/lib",
+                    "ORT_SKIP_DOWNLOAD" : "1"
                 }
             },
+            "build-commands" : [
+                "mkdir -p .cargo && cp cargo/config .cargo/config",
+                "meson setup --prefix=/app --libdir=/app/lib --buildtype=release _build",
+                "ninja -C _build",
+                "ninja -C _build install"
+            ],
             "sources" : [
                 {
                     "type" : "git",
                     "url" : "https://github.com/RuriChoco/Photopaper.git",
-                    "commit" : "26f0a3a57b8d00356591ee3a763865937cc1681a"
+                    "commit" : "01e3da677c5ca78e8cba095215f13a599279076e"
                 },
                 "cargo-sources.json"
             ]
