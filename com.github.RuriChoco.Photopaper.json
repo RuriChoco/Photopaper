@@ -12,17 +12,11 @@
         "--share=ipc",
         "--socket=fallback-x11",
         "--device=dri",
-        "--socket=wayland"
+        "--socket=wayland",
+        "--filesystem=home"
     ],
     "build-options" : {
-        "append-path" : "/usr/lib/sdk/rust-stable/bin",
-        "build-args" : [
-            "--share=network"
-        ],
-        "env" : {
-            "RUST_BACKTRACE" : "1",
-            "RUST_LOG" : "photopaper=debug"
-        }
+        "append-path" : "/usr/lib/sdk/rust-stable/bin"
     },
     "cleanup" : [
         "/include",
@@ -56,11 +50,20 @@
             "name" : "photopaper",
             "builddir" : true,
             "buildsystem" : "meson",
+            "build-options" : {
+                "append-path" : "/usr/lib/sdk/rust-stable/bin",
+                "env" : {
+                    "CARGO_HOME" : "/run/build/photopaper/cargo-home",
+                    "CARGO_NET_OFFLINE" : "true"
+                }
+            },
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "file:///home/dion/photopaper"
-                }
+                    "url" : "https://github.com/RuriChoco/Photopaper.git",
+                    "commit" : "26f0a3a57b8d00356591ee3a763865937cc1681a"
+                },
+                "cargo-sources.json"
             ]
         }
     ]
