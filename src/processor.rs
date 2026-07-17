@@ -281,7 +281,7 @@ impl Processor {
         let size_passport = (413, 531); 
 
         let margin = 60; // 0.2 inch safe margin from edges
-        let spacing = 30; // 0.1 inch gap between photos for easy cutting
+        let spacing = 0; // No gap between photos for easy edge-to-edge cutting
 
         match layout {
             LayoutMode::Single(IdSize::TwoByTwo) => {
